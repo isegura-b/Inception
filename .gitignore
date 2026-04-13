@@ -1,12 +1,6 @@
-# Secrets
+# Secrets (CRÍTICO)
 secrets/
-secrets/**
 .env
-.env.*
-
-# Docker volumes
-data/
-data/**
 
 # Logs
 *.log
