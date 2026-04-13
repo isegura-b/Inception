@@ -1,6 +1,6 @@
 # Secrets (CRÍTICO)
-secrets/
-.env
+src/ecrets/
+src/.env
 
 # Logs
 *.log
