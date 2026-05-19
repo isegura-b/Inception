@@ -1,38 +1,46 @@
 NAME = inception
-COMPOSE = sudo docker compose -f srcs/docker-compose.yml
+COMPOSE = docker compose -f srcs/docker-compose.yml
 
-all: seg
+all: secrets seg
 
-up:
+secrets:
+	mkdir -p srcs/secrets
+	@if [ ! -f srcs/secrets/db_password.txt ]; then echo "db_password" > srcs/secrets/db_password.txt; fi
+	@if [ ! -f srcs/secrets/db_root_password.txt ]; then echo "db_root_password" > srcs/secrets/db_root_password.txt; fi
+	@if [ ! -f srcs/secrets/wp_admin_password.txt ]; then echo "wp_admin_password" > srcs/secrets/wp_admin_password.txt; fi
+	@if [ ! -f srcs/secrets/wp_user_password.txt ]; then echo "wp_user_password" > srcs/secrets/wp_user_password.txt; fi
+
+up: secrets
 	$(COMPOSE) up --build
 
-seg:
+seg: secrets
 	$(COMPOSE) up --build -d
 
 down:
 	$(COMPOSE) down
 
-re: down up
+re: down seg
 
 clean:
 	$(COMPOSE) down -v --rmi all
 
 fclean: clean
-	sudo docker system prune -af
+	rm -rf srcs/secrets
+	docker system prune -af
 
 ps:
-	sudo docker ps
+	docker ps
 
 logs:
 	$(COMPOSE) logs
 
 mariadb:
-	sudo docker exec -it mariadb bash
+	docker exec -it mariadb bash
 
 wordpress:
-	sudo docker exec -it wordpress bash
+	docker exec -it wordpress bash
 
 nginx:
-	sudo docker exec -it nginx bash
+	docker exec -it nginx bash
 
-.PHONY: all up down re clean fclean ps logs mariadb wordpress nginx
+.PHONY: all secrets up seg down re clean fclean ps logs mariadb wordpress nginx

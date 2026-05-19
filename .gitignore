@@ -1,9 +1,0 @@
-# Secrets (CRÍTICO)
-src/ecrets/
-src/.env
-
-# Logs
-*.log
-
-# OS
-.DS_Store
