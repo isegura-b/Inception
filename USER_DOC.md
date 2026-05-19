@@ -1,26 +1,109 @@
 # User Documentation
 
-## 1. Starting the Application
+## Purpose
 
-Run:
+This document explains how to use and manage the Inception infrastructure.
+
+---
+
+## Starting the Application
+
+Build and start all services:
 
 ```bash
 make
 ```
 
+Verify containers:
+
+```bash
+docker ps
+```
+
+Expected services:
+
+- nginx
+- wordpress
+- mariadb
+
 ---
 
-## 2. Access
+## Accessing the Website
 
-Open in browser:
+Open:
 
-```
+```text
 https://isegura.42.fr
 ```
 
+Because a self-signed TLS certificate is used, the browser may display a security warning.
+
+Accept the warning and continue.
+
 ---
 
-## 3. Stopping the Application
+## Accessing the WordPress Admin Panel
+
+Open:
+
+```text
+https://isegura.42.fr/wp-admin
+```
+
+Login using the administrator credentials configured during installation.
+
+---
+
+## Managing Credentials
+
+Passwords are stored as Docker secrets:
+
+```text
+srcs/secrets/
+```
+
+Files:
+
+```text
+db_password.txt
+db_root_password.txt
+wp_admin_password.txt
+wp_user_password.txt
+```
+
+If credentials are modified, rebuild the infrastructure:
+
+```bash
+make re
+```
+
+---
+
+## Basic Checks
+
+Verify running containers:
+
+```bash
+docker ps
+```
+
+Check logs:
+
+```bash
+docker logs nginx
+docker logs wordpress
+docker logs mariadb
+```
+
+Check volumes:
+
+```bash
+docker volume ls
+```
+
+---
+
+## Stopping Services
 
 ```bash
 make down
@@ -28,58 +111,10 @@ make down
 
 ---
 
-## 4. Clean Restart
+## Full Cleanup
 
 ```bash
 make fclean
-make
 ```
 
----
-
-## 5. Data Persistence
-
-All data is stored in:
-
-```
-/home/isegura/data/
-```
-
-Data remains intact after container rebuilds unless manually deleted.
-
----
-
-## 6. Troubleshooting
-
-### WordPress cannot connect to database
-
-Check container status:
-
-```bash
-sudo docker ps
-```
-
-Check logs:
-
-```bash
-sudo docker logs mariadb
-sudo docker logs wordpress
-```
-
----
-
-### HTTPS warning in browser
-
-Expected behavior due to self-signed certificate.
-
----
-
-## 7. Useful Commands
-
-```bash
-sudo docker ps
-sudo docker logs <container>
-```
-
----
-
+This removes containers, images, networks and generated resources.
