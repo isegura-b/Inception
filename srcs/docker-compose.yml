@@ -1,6 +1,7 @@
 services:
   mariadb:
     build: ./requirements/mariadb
+    image: mariadb
     container_name: mariadb
     restart: always
     env_file:
@@ -9,12 +10,13 @@ services:
       - db_password
       - db_root_password
     volumes:
-      - /home/isegura/data/mariadb:/var/lib/mysql
+      - mariadb:/var/lib/mysql
     networks:
       - inception
 
   wordpress:
     build: ./requirements/wordpress
+    image: wordpress
     container_name: wordpress
     restart: always
     env_file:
@@ -24,7 +26,7 @@ services:
       - wp_admin_password
       - wp_user_password
     volumes:
-      - /home/isegura/data/wordpress:/var/www/html
+      - wordpress:/var/www/html
     depends_on:
       - mariadb
     networks:
@@ -32,6 +34,7 @@ services:
 
   nginx:
     build: ./requirements/nginx
+    image: nginx
     container_name: nginx
     restart: always
     env_file:
@@ -39,7 +42,7 @@ services:
     ports:
       - "443:443"
     volumes:
-      - /home/isegura/data/wordpress:/var/www/html
+      - wordpress:/var/www/html
     depends_on:
       - wordpress
     networks:
@@ -47,6 +50,21 @@ services:
 
 networks:
   inception:
+
+volumes:
+  mariadb:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/isegura/data/mariadb
+
+  wordpress:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/isegura/data/wordpress
 
 secrets:
   db_password:
